@@ -3,6 +3,7 @@ const User = require('../models/User');
 module.exports = {
   getUsers(req, res) {
     User.find()
+    .populate("friends")
       .then((users) => res.json(users))
       .catch((err) => res.status(500).json(err));
   },
@@ -29,6 +30,13 @@ module.exports = {
   deleteUser(req,res) {
     User.findOneAndDelete({_id:req.params.userId})
     .then((dbUserData) => res.json(dbUserData))
+      .catch((err) => res.status(500).json(err));
+  },
+  addFriend(req, res) {
+    User.findOneAndUpdate({_id:req.params.userId},{
+      $push: {friends:req.params.friendId}
+    })
+      .then((dbUserData) => res.json(dbUserData))
       .catch((err) => res.status(500).json(err));
   },
   
