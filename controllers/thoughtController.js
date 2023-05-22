@@ -10,7 +10,7 @@ module.exports = {
     getSingleThought(req,res){
         Thought.findOne({_id: req.params.thoughtId})
         .then((thought) =>
-        !user
+        !thought
           ? res.status(404).json({ message: 'No thought with that ID' })
           : res.json(thought)
       )
@@ -18,7 +18,7 @@ module.exports = {
 
     },
     createThoughts(req,res){
-        Thought.create({_id:req.params.thoughtId},req.body)
+        Thought.create(req.body)
         .then((dbThoughtsData)=> res.json(dbThoughtsData))
         .catch((err)=> res.status(500).json(err))
     }
