@@ -3,6 +3,7 @@ const {
     getThoughts,
     getSingleThought,
     createThoughts,
+    updateThoughts,
 
 } = require('../../controllers/thoughtController.js')
 
@@ -10,7 +11,7 @@ const {
 
 router.route('/').get(getThoughts).post(createThoughts);
 
-router.route('/:thoughtId').get(getSingleThought)
+router.route('/:thoughtId').get(getSingleThought).put(updateThoughts)
 
 
 

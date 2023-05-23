@@ -21,7 +21,14 @@ module.exports = {
         Thought.create(req.body)
         .then((dbThoughtsData)=> res.json(dbThoughtsData))
         .catch((err)=> res.status(500).json(err))
-    }
+    },
+    updateThoughts(req,res){
+        Thought.updateOne({_id:req.params.thoughtId},req.body)
+        .then((thoughtsData) => res.json(thoughtsData))
+        .catch((err)=> res.status(500).json(err));
+    },
+
+
 
 
 
