@@ -1,9 +1,10 @@
 const User = require('../models/User');
+const Thought = require('../models/thought');
 
 module.exports = {
   getUsers(req, res) {
     User.find()
-    .populate("friends")
+    .populate("friends","thought")
       .then((users) => res.json(users))
       .catch((err) => res.status(500).json(err));
   },
