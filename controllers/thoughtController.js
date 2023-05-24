@@ -1,4 +1,5 @@
-const Thought = require('../models/thought');
+const {Thought, User} = require('../models');
+// const User = require('../models/user');
 
 
 module.exports = {
@@ -20,7 +21,18 @@ module.exports = {
     },
     createThoughts(req,res){
         Thought.create(req.body)
-        .then((dbThoughtsData)=> res.json(dbThoughtsData))
+
+        .then((dbThoughtsData)=> { 
+          return User.findOneAndUpdate({_id:req.body.userId },
+            {
+              $addToSet: {thoughts:dbThoughtsData._id}
+                //Thought.reactions
+        },{new:true})
+          // res.json(dbThoughtsData)
+        } )
+        .then((data)=>{
+          res.json(data)
+        })
         .catch((err)=> res.status(500).json(err))
     },
     updateThoughts(req,res){
@@ -33,44 +45,46 @@ module.exports = {
         .then((dbThoughtsData)=>res.json(dbThoughtsData))
         .catch((err)=>res.status(500).json(err));
     },
-    // addReaction(req,res){
-    //     Thought.findOneAndUpdate({_id:req.params.thoughtId },
-    //         {reactionBody: req.body.reactionBody,username:req.body.username},
-    //         {$push: 
-    //             {thought:req.params.thoughtId}
-    //             //Thought.reactions
-    //     })
-    //     .then((dbThoughtsData)=> res.json(dbThoughtsData))
-    //     .catch((err)=>res.status(500).json(err))
-    // }
+    addReaction(req,res){
+        Thought.findOneAndUpdate({_id:req.params.thoughtId },
+            //{reactionBody: req.body.reactionBody,username:req.body.username},
+            {$addToSet: 
+                {reactions:req.body}
+                //Thought.reactions
+        })
+        .then((dbThoughtsData)=> res.json(dbThoughtsData))
+        .catch((err)=>res.status(500).json(err))
+    }
     
-    async createReaction  (req, res)  {
-        const { thoughtId } = req.params;
-        const { reactionBody, username } = req.body;
+    // async createReaction  (req, res)  {
+    //     const { thoughtId } = req.params;
+    //     const { reactionBody, username } = req.body;
       
-        try {
+    //     try {
           
-          console.log(thoughtId);
-          console.log(req.params.thoughtId);
-          const thought = await Thought.findOneAndUpdate({_id:req.params.thoughtId},{$addToSet:{reactions:req.body}},{new:true});
+    //       console.log(thoughtId);
+    //       console.log(req.params.thoughtId);
+    //       const thought = await Thought.findOneAndUpdate({_id:req.params.thoughtId},{$addToSet:{reactions:req.body}},{new:true});
       
          
-          if (!thought) {
-            return res.status(404).json({ error: 'Thought not found' });
-          }
+    //       if (!thought) {
+    //         return res.status(404).json({ error: 'Thought not found' });
+    //       }
       
    
-          // const newReaction = { reactionBody, username };
-          // thought.reactions.push(newReaction);
-          // await thought.save();
+    //       // const newReaction = { reactionBody, username };
+    //       // thought.reactions.push(newReaction);
+    //       // await thought.save();
       
-          res.status(200).json(thought);
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ error: 'Server error' });
-        }
-      },
+    //       res.status(200).json(thought);
+    //     } catch (error) {
+    //       console.error(error);
+    //       res.status(500).json({ error: 'Server error' });
+    //     }
+    //   },
       
+
+
 
 
 
