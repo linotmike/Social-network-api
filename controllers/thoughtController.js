@@ -54,7 +54,8 @@ module.exports = {
         })
         .then((dbThoughtsData)=> res.json(dbThoughtsData))
         .catch((err)=>res.status(500).json(err))
-    }
+    },
+    
     
     // async createReaction  (req, res)  {
     //     const { thoughtId } = req.params;
@@ -83,23 +84,39 @@ module.exports = {
     //     }
     //   },
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    async deleteReaction(req, res) {
+      try {
+          const dbReactionData = await Thought.findOneAndUpdate(
+              { _id: req.params.thoughtId },
+              { $pull: { reactions: { reactionId: req.params.reactionId } } },
+              { runValidators: true, new: true }
+          )
+          if (!dbReactionData) {
+              return res.status(400).json({ msg: "No reaction exists within db" });
+          }
+          res.json(dbReactionData);
+      } catch (error) {
+          console.log(error);
+          res.status(500).json({ msg: "Error deleting reaction for the thought", error });
+      }
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
